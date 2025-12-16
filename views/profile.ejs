@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Form</title>
+    <script src="https://cdn.tailwindcss.com" ></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-eN6a2..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+<body class="bg-zinc-900 text-white">
+
+    <div class="w-full h-12 flex items-center bg-zinc-500 px-4 sm:px-6 md:px-20">
+    <h1 class="tracking-tighter text-xl sm:text-2xl md:text-3xl text-black underline decoration-2">Anonymus.</h1>
+    <button onclick="window.location.href='/feed'" class="ml-auto mt-1 sm:mt-2 mr-2 sm:mr-4 px-3 py-1 bg-green-500 rounded-md text-white text-sm sm:text-lg mb-1 hover:bg-green-800 transition font-bold tracking-tighter">Feed</button>
+        <button onclick="window.location.href='/'" class="mt-1 sm:mt-2 mr-2  sm:mr-4 px-3 py-1 bg-white rounded-md text-blue-600 text-sm sm:text-lg hover:bg-gray-300 transition mb-2">Home</button>
+  </div>
+
+    <div class="w-full min-h-screen p-4 mt-2">
+    <h2 class=" text-2xl "><span class="bg-yellow-500/40 rounded-md underline decoration-2 decoration-yellow-400 px-1 py-1/2 text-2xl text-yellow-200">Hello</span>,     <span class="underline"><%=user.name%></span>😌</h2>
+    </br>
+    <h3 ><span class="bg-green-700/40 rounded-md underline decoration-2 decoration-green-400 px-1 py-1/2 mx-2 text-green-300">You can create a new post.</span></h3>
+    <form action="/post" method="post">
+        <textarea placeholder="What's on your mind?" class="mx-3 my-4  resize-none bg-zinc-700 border-2 border-white rounded-md w-2/3 h-2/3 text-center outline-none p-3 block" name="content"></textarea>
+        <div class="flex gap-3">
+        <input class="px-3 py-2 bg-blue-500 block rounded-md m-3 text-m hover:bg-blue-800 transition" type="submit" value="Create Post">
+       <a href="/logout" class="px-3 py-2 bg-red-500 rounded-md m-3 text-l hover:bg-red-800 transition inline-block">
+  Logout
+</a>
+        </div>
+    </form>
+    <div class="posts mt-20">
+      <h2 class="mx-4 underline text-xl "><span class="bg-rose-700/40 rounded-md underline decoration-2 decoration-rose-400 px-1 py-1/2 text-rose-200">Your posts</span></h2>
+      <div class="postcontainer mt-5">
+        
+        <%user.posts.reverse().forEach(function(post){%>
+    <div class="post w-2/3 p-4 mb-3  border-2 bg-zinc-800 border-zinc-700 rounded-md">
+            <h3 class="underline text-blue-500 decoration-1 decoration-blue-300 mb-3">@<%=user.username%></h3>
+            <p class="text-sm tracking-loose"><%=post.content%></p>
+            <div class="btns flex gap-4 mt-3">
+            <a class=" text-white" href="/like/<%=post._id%>"><%=post.likes.length%>
+  <i class="fa-heart text-l
+<%= post.likes.includes(user._id.toString()) 
+    ? 'fa-solid text-red-500' 
+    : 'fa-regular text-gray-300' %>
+transition-colors duration-200 ease-in-out"></i>
+
+</a>
+<a class="text-orange-400 underline bg-orange-600/40 rounded-lg px-1 py-1/2" href="/edit/<%=post._id%>" >Edit</a>
+            </div>
+        </div>
+        <%})%>
+
+   </div>
+    </div>
+    </div>
+
+
+   
+</body>
+</html>
