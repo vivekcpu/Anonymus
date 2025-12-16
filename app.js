@@ -14,8 +14,6 @@ app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
 app.get('/', (req, res) => {
     res.render('home');
 });
@@ -91,7 +89,7 @@ app.post('/register', async (req, res) => {
 
     let found = await userModel.findOne({ email });
     if (found) {
-        return res.render('exist'); // ✅ stop here
+        return res.render('exist'); 
     }
 
     bcrypt.genSalt(10, (err, salt) => {
@@ -105,24 +103,47 @@ app.post('/register', async (req, res) => {
             });
 
             let token = jwt.sign(
-                { email: email, userid: user._id },JWT_SECRET       
+                { email: email, userid: user._id },
+                "secret"
             );
 
-           res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "none"
-});
-
-            return res.redirect('/success'); 
+            res.cookie("token", token);
+            return res.redirect('success'); 
         });
     });
 });
 
+app.post('/api/like/:id', isLoggedIn, async (req, res) => {
+    const post = await postModel.findById(req.params.id);
+    if (!post) {
+        return res.status(404).json({ error: 'Post not found' });
+    }
+
+    const userId = req.user.userid;
+    const index = post.likes.indexOf(userId);
+
+    let liked;
+
+    if (index === -1) {
+        post.likes.push(userId);
+        liked = true;
+    } else {
+        post.likes.splice(index, 1);
+        liked = false;
+    }
+
+    await post.save();
+
+    res.json({
+        liked,
+        likesCount: post.likes.length
+    });
+});
+
+
 app.get('/success', (req, res) => {
     res.render('success');
 });
-
 
 app.get('/login', (req, res) => {
     res.render('login');
@@ -131,20 +152,18 @@ app.get('/login', (req, res) => {
 app.post('/login', async(req, res) => {
     let{password,email} = req.body;
     let user = await userModel.findOne({email});
-    if(!user) return res.status(404).send('User Not Found');
+    if(!user){
+        return res.render('notfound');
+    };
 
     let isMatch = await bcrypt.compare(password,user.password);
-    if(!isMatch) return res.render('invalid');
+    if(!isMatch){
+        return res.render('invalid');
+    };
     if(isMatch){
-        let token = jwt.sign({email:email, userid: user._id},JWT_SECRET);
-       
-res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "none"
-});
-
-res.redirect('/profile');
+        let token = jwt.sign({email:email, userid: user._id},"secret");
+        res.cookie("token",token);
+        res.redirect('/profile');
     }
 });
 
@@ -161,14 +180,15 @@ function isLoggedIn(req, res, next) {
     }
 
     try {
-        const data = jwt.verify(token, JWT_SECRET);
+        const data = jwt.verify(token, "secret");
         req.user = data;
         next();
     } catch (err) {
-        return res.render('notfound');
+        return res.status(401).send("Invalid Token");
     }
 }
 
 
-module.exports = app;
-
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+});
