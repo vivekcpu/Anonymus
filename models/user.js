@@ -1,17 +1,20 @@
 const mongoose = require('mongoose');
+require("dotenv").config();
 
-mongoose.connect('mongodb://127.0.0.1:27017/mini_project');
+mongoose.connect(process.env.MONGO_URI);
 
 const userSchema = new mongoose.Schema({
-username:String,
-name:String,
-age:Number,
-email:String,
-password:String,
-posts:[{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'post'
-}]
+    username: String,
+    name: String,
+    age: Number,
+    email: String,
+    password: String,
+    posts: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'post'
+        }
+    ]
 });
 
-module.exports = mongoose.model('user',userSchema);
+module.exports = mongoose.model('user', userSchema);
