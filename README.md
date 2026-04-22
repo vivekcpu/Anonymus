@@ -1,62 +1,75 @@
-# ðŸ•µï¸ Anonymous â€” Anonymous Messaging App
+# Anonymus - Anonymous Messaging App
 
-A full-stack web application that enables users to send and receive messages completely anonymously. Built using Node.js, Express.js, MongoDB, and EJS for server-side rendering.
+A full-stack web application that lets users send and receive messages completely anonymously. Features JWT-based authentication, user profiles, a public feed, and full CRUD operations — all wrapped in a clean server-side rendered interface.
 
----
-
-## ðŸš€ Features
-
-- 100% Anonymous messaging (no identity stored)
-- Send messages anonymously
-- View all submitted messages
-- Fast server-side rendering using EJS
-- MongoDB database integration
-- Clean and modular structure
+Live Demo: https://anonymus-gi0p.onrender.com/
 
 ---
 
-## ðŸ› ï¸ Tech Stack
+## Features
+
+- 100% Anonymous messaging — no sender identity revealed
+- JWT-based authentication with secure cookie sessions
+- User registration, login, and logout
+- Personalized profile page per user
+- Public feed of all anonymous messages
+- Full CRUD — create, read, update, and delete messages
+- Like / reaction system on messages
+- Password hashing with bcrypt
+- Server-side rendering with EJS
+- MongoDB Atlas cloud database integration
+- Clean and modular MVC structure
+
+---
+
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
 | Frontend | EJS, HTML, Tailwind CSS |
 | Backend | Node.js, Express.js |
-| Database | MongoDB (Mongoose) |
+| Database | MongoDB Atlas (Mongoose) |
+| Auth | JWT, Cookie-based sessions |
+| Security | bcrypt (password hashing) |
 | Tools | Git, npm, dotenv |
 
 ---
 
-## ðŸ“ Project Structure
+## Project Structure
 
 ```
-anonymous/
-â”œâ”€â”€ models/
-â”‚   â””â”€â”€ Message.js
-â”œâ”€â”€ routes/
-â”‚   â””â”€â”€ index.js
-â”œâ”€â”€ views/
-â”‚   â”œâ”€â”€ index.ejs
-â”‚   â”œâ”€â”€ submit.ejs
-â”‚   â””â”€â”€ partials/
-â”œâ”€â”€ public/
-â”‚   â”œâ”€â”€ css/
-â”‚   â”œâ”€â”€ js/
-â”‚   â””â”€â”€ images/
-â”œâ”€â”€ .env
-â”œâ”€â”€ app.js
-â”œâ”€â”€ package.json
-â””â”€â”€ README.md
+Anonymus/
+├── models/
+│   ├── post.js
+│   └── user.js
+├── views/
+│   ├── edit.ejs
+│   ├── exist.ejs
+│   ├── feed.ejs
+│   ├── home.ejs
+│   ├── index.ejs
+│   ├── invalid.ejs
+│   ├── login.ejs
+│   ├── logout.ejs
+│   ├── notfound.ejs
+│   ├── profile.ejs
+│   └── success.ejs
+├── .gitignore
+├── app.js
+├── package.json
+├── package-lock.json
+└── README.md
 ```
 
 ---
 
-## âš™ï¸ Installation & Setup
+## Installation & Setup
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/anonymous.git
-cd anonymous
+git clone https://github.com/vivekcpu/Anonymus.git
+cd Anonymus
 ```
 
 ### 2. Install dependencies
@@ -69,7 +82,8 @@ npm install
 
 ```env
 PORT=3000
-MONGO_URI=your_mongodb_connection_string
+MONGO_URI=your_mongodb_atlas_connection_string
+JWT_SECRET=your_jwt_secret_key
 ```
 
 ### 4. Run the application
@@ -86,45 +100,67 @@ npm run dev
 
 ---
 
-## ðŸŒ Usage
+## Usage
 
-1. Open your browser and go to: `http://localhost:3000`
-2. Submit anonymous messages
-3. View messages on the homepage
-
----
-
-## ðŸ§  How It Works
-
-1. User submits a message through a form
-2. Express handles the request
-3. Data is stored in MongoDB using Mongoose
-4. Server fetches all messages
-5. EJS renders them dynamically on the page
+1. Open your browser and go to `http://localhost:3000`
+2. Register a new account or log in
+3. Submit anonymous messages to the feed
+4. View, edit, delete, or like messages
+5. Visit your profile to manage your posts
 
 ---
 
-## ðŸ“Œ API Routes
+## How It Works
 
-| Method | Route | Description |
-|---|---|---|
-| GET | `/` | Show all messages |
-| GET | `/submit` | Show submit form |
-| POST | `/submit` | Save a new message |
-
----
-
-## ðŸ”® Future Enhancements
-
-- [ ] Authentication (JWT / OAuth)
-- [ ] Spam filtering
-- [ ] Like / reaction system
-- [ ] Responsive UI improvements
-- [ ] Deployment (Render / Railway / Vercel)
+1. User registers with a username and password
+2. Password is hashed using **bcrypt** before storing in MongoDB
+3. On login, a **JWT token** is generated and stored in a secure **cookie**
+4. Protected routes verify the JWT on each request
+5. Authenticated users can create, edit, delete, and like posts
+6. **EJS** templates render all pages server-side dynamically
 
 ---
 
-## ðŸ¤ Contributing
+## API Routes
+
+| Method | Route | Description | Auth Required |
+|---|---|---|---|
+| GET | `/` | Landing page | No |
+| GET | `/feed` | View all messages | No |
+| GET | `/register` | Register page | No |
+| POST | `/register` | Create new user | No |
+| GET | `/login` | Login page | No |
+| POST | `/login` | Authenticate user | No |
+| GET | `/logout` | Log out user | Yes |
+| GET | `/profile` | User profile page | Yes |
+| POST | `/post` | Create new message | Yes |
+| GET | `/edit/:id` | Edit message page | Yes |
+| POST | `/edit/:id` | Update message | Yes |
+| POST | `/delete/:id` | Delete message | Yes |
+| POST | `/like/:id` | Like a message | Yes |
+
+---
+
+## Security
+
+- Passwords are never stored in plain text — bcrypt hashing with salt rounds
+- JWT tokens are stored in HTTP-only cookies to prevent XSS attacks
+- Protected routes reject unauthenticated requests automatically
+- Environment variables keep secrets out of source code
+
+---
+
+## Future Enhancements
+
+- [ ] Real-time messaging with Socket.io
+- [ ] Spam / abuse filtering
+- [ ] Comment threads on posts
+- [ ] Responsive mobile UI
+- [ ] Admin dashboard
+
+---
+
+## Contributing
 
 1. Fork the repo
 2. Create a branch (`git checkout -b feature-name`)
@@ -134,14 +170,18 @@ npm run dev
 
 ---
 
+## License
 
-## ðŸ‘¨â€ðŸ’» Author
+This project is licensed under the [MIT License](LICENSE).
 
-**Vivek Rakesh Tiwary**  
-GitHub: [@vivekcpu](https://github.com/vivekcpu)
-Live Demo : https://anonymus-gi0p.onrender.com/
 ---
 
-## â­ Support
+## Author
 
-If you like this project, give it a â­ on GitHub â€” it means a lot!
+**Vivek Rakesh Tiwary**
+GitHub: [@vivekcpu](https://github.com/vivekcpu)
+Live Demo: https://anonymus-gi0p.onrender.com/
+
+---
+
+If you like this project, give it a star on GitHub - it means a lot!
