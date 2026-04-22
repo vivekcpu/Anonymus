@@ -126,7 +126,7 @@ npm run dev
 | Method | Route | Description | Auth Required |
 |---|---|---|---|
 | GET | `/` | Landing page | No |
-| GET | `/feed` | View all messages | No |
+| GET | `/feed` | View all messages | Yes |
 | GET | `/register` | Register page | No |
 | POST | `/register` | Create new user | No |
 | GET | `/login` | Login page | No |
